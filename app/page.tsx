@@ -1,65 +1,190 @@
+"use client";
+import { useEffect, useState } from "react";
+import ProductCard from "./components/ProductCard";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Image from "next/image";
+type Product = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  stock: number;
+};
 
 export default function Home() {
+  const [search, setSearch] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+
+useEffect(() => {
+  async function fetchProducts() {
+    try {
+      const res = await fetch("/api/products");
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("FETCH PRODUCTS ERROR:", error);
+      setProducts([]);
+    }
+  }
+
+  fetchProducts();
+}, []);
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase()) ||
+    product.category.toLowerCase().includes(search.toLowerCase()) ||
+    product.description.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const bracelets = filteredProducts.filter(
+    (product) => product.category === "Bracelets"
+  );
+
+  const caps = filteredProducts.filter(
+    (product) => product.category === "Caps"
+  );
+
+  const fresheners = filteredProducts.filter(
+    (product) => product.category === "DS Fresher"
+  );
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <main className="min-h-screen bg-[#F7F5EF] text-[#24243F]">
+      <Navbar />
+
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-10 py-20 lg:grid-cols-2">
+  <div>
+    <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#FF4F7A]">
+      Accessories & Car Fresheners
+    </p>
+
+    <h2 className="mb-6 text-5xl font-extrabold leading-tight text-[#24243F]">
+      Small details that make your style stand out.
+    </h2>
+
+    <p className="mb-8 max-w-xl text-lg text-zinc-600">
+      Shop bracelets, caps, and DS Freshers designed to add personality to your look and freshness to your car.
+    </p>
+
+    <div className="flex gap-4">
+      <a
+        href="#bracelets"
+        className="rounded-full px-8 py-3 font-semibold text-white shadow-md transition hover:scale-[1.02]"
+        style={{
+          background: "linear-gradient(90deg, #F77C63 0%, #FF4F7A 100%)",
+        }}
+      >
+        Shop Now
+      </a>
+
+      <a
+        href="#fresheners"
+        className="rounded-full border border-[#33D6D1] px-8 py-3 font-semibold text-[#24243F] transition hover:bg-[#33D6D1] hover:text-white"
+      >
+        View Fresheners
+      </a>
     </div>
+  </div>
+
+  <div className="rounded-3xl bg-white p-6 shadow-sm">
+  <div className="relative h-[420px] overflow-hidden rounded-2xl bg-[#24243F]">
+    <Image
+      src="/products/ds-store-logo-new.jpg"
+      alt="DS Store Logo"
+      fill
+      className="object-cover"
+      priority
+    />
+  </div>
+</div>
+</section>
+<section className="mx-auto max-w-6xl px-10 pb-12">
+  <input
+    value={search}
+    onChange={(event) => setSearch(event.target.value)}
+    type="text"
+    placeholder="Search bracelets, caps, fresheners..."
+    className="w-full rounded-full border border-zinc-300 bg-white px-6 py-4 outline-none focus:border-[#33D6D1]"
+  />
+</section>
+
+      {bracelets.length > 0 && (
+  <ProductSection id="bracelets" title="Bracelets" products={bracelets} />
+)}
+
+{caps.length > 0 && (
+  <ProductSection id="caps" title="Caps" products={caps} />
+)}
+
+{fresheners.length > 0 && (
+  <ProductSection id="fresheners" title="DS Fresher" products={fresheners} />
+)}
+
+{filteredProducts.length === 0 && (
+  <section className="mx-auto max-w-6xl px-10 pb-20">
+    <p className="rounded-2xl bg-white p-6 text-zinc-500 shadow-sm">
+      No products found.
+    </p>
+  </section>
+)}
+      <Footer />
+    </main>
+  );
+}
+
+
+function ProductSection({
+  id,
+  title,
+  products,
+}: {
+  id: string;
+  title: string;
+  products: Product[];
+}) {
+  return (
+    <section id={id} className="mx-auto max-w-6xl px-10 pb-20">
+  <div className="mb-8 flex items-end justify-between">
+    <div>
+      <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#FF4F7A]">
+        Shop by category
+      </p>
+
+      <h3 className="text-3xl font-bold">{title}</h3>
+    </div>
+
+    <a href="#" className="text-sm font-medium text-zinc-500 hover:text-[#33D6D1]">
+      View all
+    </a>
+  </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            description={product.description}
+            price={product.price}
+            image={product.image}
+            category={product.category}
+            slug={String(product.id)}
+            stock={product.stock}
+          />
+        ))}   
+      </div>
+    </section>
   );
 }
