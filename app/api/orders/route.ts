@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { verifyAdminToken } from "../../../lib/auth";
 import { verifyCustomerToken } from "../../../lib/customerAuth";
 import { sendOrderEmails } from "../../../lib/email";
+import type { Prisma } from "@prisma/client";
 
 async function isAdminLoggedIn() {
   const cookieStore = await cookies();
@@ -75,7 +76,7 @@ export async function POST(request: Request) {
     }
 
     const order = await prisma.$transaction(
-      async (tx) => {
+      async (tx: Prisma.TransactionClient) => {
       for (const item of items) {
         const product = await tx.product.findUnique({
           where: {
