@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { UploadButton } from "../../utils/uploadthing";
 
 type Product = {
   id: number;
@@ -192,14 +193,37 @@ export default function AdminProductsPage() {
               className="rounded-2xl border border-zinc-200 bg-[#F7F5EF] px-5 py-4 outline-none transition focus:border-[#33D6D1] focus:bg-white"
             />
 
-            <input
-              type="text"
-              placeholder="Image path, example: /products/blue-bracelet.jpg"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-              className="md:col-span-2 rounded-2xl border border-zinc-200 bg-[#F7F5EF] px-5 py-4 outline-none transition focus:border-[#33D6D1] focus:bg-white"
-            />
+            <div className="md:col-span-2 rounded-2xl border border-zinc-200 bg-[#F7F5EF] p-5">
+              <label className="mb-3 block text-sm font-bold">Product Image</label>
+
+              {image ? (
+                <div className="mb-4">
+                  <p className="mb-2 text-sm text-zinc-500">Uploaded image:</p>
+                  <img
+                    src={image}
+                    alt="Uploaded product"
+                    className="h-32 w-32 rounded-2xl object-cover"
+                  />
+                </div>
+              ) : (
+                <p className="mb-4 text-sm text-zinc-500">
+                  Upload a product image.
+                </p>
+              )}
+
+              <UploadButton
+                endpoint="productImage"
+                onClientUploadComplete={(res) => {
+                  if (res && res[0]) {
+                    setImage(res[0].url);
+                    setMessage("Image uploaded successfully.");
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  setMessage(`Image upload failed: ${error.message}`);
+                }}
+              />
+            </div>
 
             <textarea
               placeholder="Product description"
