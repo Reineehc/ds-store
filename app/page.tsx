@@ -61,7 +61,16 @@ useEffect(() => {
   );
 
   return (
-    <main className="min-h-screen bg-[#F7F5EF] text-[#24243F]">
+    <main className="relative min-h-screen overflow-hidden bg-[#F7F5EF] text-[#24243F]">
+  <div
+    className="pointer-events-none fixed inset-0 z-0 bg-center bg-no-repeat opacity-[0.03]"
+    style={{
+      backgroundImage: "url('/products/ds-store-logo.jpg')",
+      backgroundSize: "650px",
+    }}
+  />
+
+  <div className="relative z-10">
       <Navbar />
 
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-10 py-20 lg:grid-cols-2">
@@ -98,7 +107,7 @@ useEffect(() => {
     </div>
   </div>
 
-  <div className="rounded-3xl bg-white p-6 shadow-sm">
+  <div className="animate-[float_4s_ease-in-out_infinite] rounded-3xl bg-white p-3 shadow-sm">
   <div className="relative h-[420px] overflow-hidden rounded-2xl bg-[#24243F]">
     <Image
       src="/products/ds-store-logo-new.jpg"
@@ -140,6 +149,7 @@ useEffect(() => {
   </section>
 )}
       <Footer />
+        </div>
     </main>
   );
 }
